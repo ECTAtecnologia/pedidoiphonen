@@ -89,12 +89,8 @@ function imprimirPedido() {
     };
 
     try {
-        // Cria o link para o Open Label
-        var link = document.createElement('a');
-        link.href = 'openlabel://print?data=' + encodeURIComponent(JSON.stringify(dadosImpressao));
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Cria o link para o Open Label com protocolo https
+        window.location.href = 'https://openlabel.app/print?data=' + encodeURIComponent(JSON.stringify(dadosImpressao));
 
         // Continua com o envio do email...
         emailjs.send("service_2frhpqp", "template_29ewlfj", {
