@@ -76,32 +76,27 @@ function imprimirPedido() {
         return;
     }
 
-    // Formata o texto para impressão
-    const textoImpressao = 
-        "\x1B\x40" +          // Initialize printer
-        "\x1B\x61\x01" +      // Center alignment
-        estabelecimento + "\n\n" +
-        "PEDIDO\n" +
-        "=================\n\n" +
-        "\x1B\x61\x00" +      // Left alignment
-        `Nome: ${nome}\n` +
-        `Telefone: ${telefone}\n\n` +
-        `Produtos:\n${produtos}\n\n` +
-        `Forma de Pagamento: ${pagamento}\n` +
-        `Endereco: ${endereco}\n` +
-        `Valor Total: ${valor}\n\n` +
-        "\x1B\x61\x01" +      // Center alignment
-        "=================\n" +
-        "\x1B\x64\x02";       // Feed 2 lines
+    // Formata o texto para o Open Label
+    const dadosImpressao = {
+        estabelecimento: estabelecimento,
+        nome: nome,
+        telefone: telefone,
+        produtos: produtos,
+        pagamento: pagamento,
+        endereco: endereco,
+        valor: valor,
+        data: new Date().toLocaleString()
+    };
 
     try {
+        // Cria o link para o Open Label
         var link = document.createElement('a');
-        link.href = 'rawbt://print?text=' + encodeURIComponent(textoImpressao);
+        link.href = 'openlabel://print?data=' + encodeURIComponent(JSON.stringify(dadosImpressao));
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        // Envia o email com confirmação
+        // Continua com o envio do email...
         emailjs.send("service_2frhpqp", "template_29ewlfj", {
             estabelecimento: estabelecimento,
             nome_cliente: nome,
