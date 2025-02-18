@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Pedidos</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://unpkg.com/vanilla-masker@1.1.1/lib/vanilla-masker.js"></script>
+    <script src="script.js"></script>
+    <style>
+        .saved-name h2 {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .establishment-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .establishment-header h2 {
+            margin: 0 0 0.3rem 0;
+        }
+        #establishment-form {
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="establishment-form" class="container mt-4">
+        <div class="form-group">
+            <label for="establishment-name" style="font-size: 0.9rem;">Nome do Estabelecimento:</label>
+            <input type="text" class="form-control" id="establishment-name" placeholder="Digite o nome do estabelecimento" style="font-size: 0.9rem; padding: 0.25rem;">
+            <button onclick="saveEstablishmentName()" class="btn btn-primary btn-sm mt-1" style="font-size: 0.8rem;">Salvar</button>
+        </div>
+    </div>
+
+    <h2>Pedido do Cliente</h2>
+    <form id="pedidoForm">
+        <div class="form-group">
+            <label for="nome">Nome do Cliente:</label>
+            <input type="text" id="nome" required>
+        </div>
+
+        <div class="form-group">
+            <label for="telefone">Telefone:</label>
+            <input type="tel" id="telefone" required>
+        </div>
+
+        <div class="form-group">
+            <label for="produtos">Produtos:</label>
+            <textarea id="produtos" rows="4" style="width: 100%" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="pagamento">Forma de Pagamento:</label>
+            <select id="pagamento" required>
+                <option value="">Selecione</option>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="pix">PIX</option>
+                <option value="debito">Débito</option>
+                <option value="credito">Crédito</option>
+                <option value="vr">VR</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="endereco">Endereço:</label>
+            <textarea id="endereco" rows="2" style="width: 100%" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="valor">Valor Total:</label>
+            <input type="tel" pattern="[0-9]*" inputmode="numeric" id="valor" required>
+        </div>
+
+        <button type="button" onclick="imprimirPedido()">Imprimir Pedido</button>
+    </form>
+</body>
+</html>
