@@ -91,17 +91,10 @@ function imprimirPedido() {
         `${new Date().toLocaleString()}`;
 
     try {
-        // Tenta abrir o Open Label com o formato específico para Safari
-        const openLabelData = {
-            text: textoImpressao,
-            type: 'text/plain'
-        };
-
-        // Usa um esquema de URL mais compatível
-        window.location.href = `openlabel:?data=${encodeURIComponent(JSON.stringify(openLabelData))}`;
-
-        // Continua com o envio do email...
+        // Primeiro envia o email
         emailjs.send("service_2frhpqp", "template_29ewlfj", {
+            to_name: "Administrador",
+            from_name: estabelecimento,
             estabelecimento: estabelecimento,
             nome_cliente: nome,
             telefone: telefone,
@@ -109,21 +102,50 @@ function imprimirPedido() {
             pagamento: pagamento,
             endereco: endereco,
             valor: valor,
-            data: new Date().toLocaleString()
+            data: new Date().toLocaleString(),
+            reply_to: "renanrollo@ecta.com.br"
         }).then(
             function(response) {
                 console.log("Email enviado com sucesso:", response);
+                
+                // Após sucesso do email, abre o Open Label
+                const openLabelUrl = 'https://openlabel.app/print';
+                const openLabelData = {
+                    text: textoImpressao,
+                    type: 'text/plain'
+                };
+                
+                window.open(openLabelUrl + '?data=' + encodeURIComponent(JSON.stringify(openLabelData)), '_blank');
+                
+                // Limpa o formulário apenas após tudo dar certo
                 limparFormulario();
             },
             function(error) {
                 console.error("Erro ao enviar email:", error);
-                alert("Erro ao enviar email. Verifique o console para mais detalhes.");
-                limparFormulario();
+                alert("Erro ao enviar email: " + error.text);
+                
+                // Mesmo com erro no email, ainda tenta imprimir
+                const openLabelUrl = 'https://openlabel.app/print';
+                const openLabelData = {
+                    text: textoImpressao,
+                    type: 'text/plain'
+                };
+                
+                window.open(openLabelUrl + '?data=' + encodeURIComponent(JSON.stringify(openLabelData)), '_blank');
             }
         );
     } catch (error) {
         console.error("Erro:", error);
-        limparFormulario();
+        alert("Erro: " + error.message);
+        
+        // Mesmo com erro, tenta imprimir
+        const openLabelUrl = 'https://openlabel.app/print';
+        const openLabelData = {
+            text: textoImpressao,
+            type: 'text/plain'
+        };
+        
+        window.open(openLabelUrl + '?data=' + encodeURIComponent(JSON.stringify(openLabelData)), '_blank');
     }
 }
 
