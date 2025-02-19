@@ -74,29 +74,64 @@ function imprimirPedido() {
     }
 
     try {
-        // Formata o texto para WhatsApp com emojis e formatação
-        const mensagemWhatsApp = `
-🏪 *${estabelecimento}*
+        // Cria um novo documento PDF
+        const doc = new jsPDF({
+            unit: 'mm',
+            format: [80, 150] // Tamanho típico de papel térmico
+        });
 
-📝 *PEDIDO*
-━━━━━━━━━━━━━━━
+        // Configura a fonte
+        doc.setFontSize(12);
+        
+        // Centraliza o texto do estabelecimento
+        doc.setFont('helvetica', 'bold');
+        doc.text(estabelecimento, 40, 10, { align: 'center' });
+        
+        // Adiciona linha divisória
+        doc.setLineWidth(0.5);
+        doc.line(5, 15, 75, 15);
 
-👤 *Nome:* ${nome}
-📱 *Telefone:* ${telefone}
+        // Configura fonte para o conteúdo
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
 
-🛍️ *Produtos:*
-${produtos}
+        // Adiciona os dados do pedido
+        let y = 25; // Posição vertical inicial
+        
+        doc.text(`Nome: ${nome}`, 5, y);
+        y += 7;
+        doc.text(`Telefone: ${telefone}`, 5, y);
+        y += 10;
+        
+        doc.text('Produtos:', 5, y);
+        y += 7;
+        // Quebra os produtos em linhas
+        const produtosLines = doc.splitTextToSize(produtos, 70);
+        doc.text(produtosLines, 5, y);
+        y += (produtosLines.length * 5) + 5;
+        
+        doc.text(`Pagamento: ${pagamento}`, 5, y);
+        y += 7;
+        
+        // Quebra o endereço em linhas
+        const enderecoLines = doc.splitTextToSize(`Endereço: ${endereco}`, 70);
+        doc.text(enderecoLines, 5, y);
+        y += (enderecoLines.length * 5) + 5;
+        
+        doc.text(`Valor Total: ${valor}`, 5, y);
+        y += 10;
 
-💳 *Forma de Pagamento:* ${pagamento}
-📍 *Endereço:* ${endereco}
-💰 *Valor Total:* ${valor}
+        // Adiciona linha divisória final
+        doc.line(5, y, 75, y);
+        y += 5;
+        
+        // Adiciona data e hora
+        doc.setFontSize(8);
+        doc.text(new Date().toLocaleString(), 40, y, { align: 'center' });
 
-━━━━━━━━━━━━━━━
-📅 ${new Date().toLocaleString()}`;
-
-        // Abre o WhatsApp com a mensagem formatada
-        // Você pode substituir o número abaixo pelo número do WhatsApp Business
-        window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(mensagemWhatsApp)}`, '_blank');
+        // Abre o PDF para impressão
+        doc.autoPrint();
+        window.open(doc.output('bloburl'), '_blank');
 
         // Continua com o envio do email...
         const mensagemEmail = `
@@ -124,7 +159,7 @@ Data: ${new Date().toLocaleString()}
 
     } catch (error) {
         console.error("Erro:", error);
-        alert("Erro ao preparar mensagem: " + error.message);
+        alert("Erro ao gerar PDF: " + error.message);
     }
 }
 
