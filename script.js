@@ -74,30 +74,29 @@ function imprimirPedido() {
     }
 
     try {
-        // Formata o texto para impressão
-        const textoImpressao = 
-            `${estabelecimento}\n\n` +
-            `PEDIDO\n` +
-            `=================\n\n` +
-            `Nome: ${nome}\n` +
-            `Telefone: ${telefone}\n\n` +
-            `Produtos:\n${produtos}\n\n` +
-            `Forma de Pagamento: ${pagamento}\n` +
-            `Endereco: ${endereco}\n` +
-            `Valor Total: ${valor}\n\n` +
-            `=================\n` +
-            `${new Date().toLocaleString()}`;
+        // Formata o texto para WhatsApp com emojis e formatação
+        const mensagemWhatsApp = `
+🏪 *${estabelecimento}*
 
-        // Tenta diferentes formatos de URL para o Open Label
-        const openLabelUrl = `openlabel:?text=${encodeURIComponent(textoImpressao)}`;
-        
-        // Cria um link e simula o clique
-        const link = document.createElement('a');
-        link.href = openLabelUrl;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+📝 *PEDIDO*
+━━━━━━━━━━━━━━━
+
+👤 *Nome:* ${nome}
+📱 *Telefone:* ${telefone}
+
+🛍️ *Produtos:*
+${produtos}
+
+💳 *Forma de Pagamento:* ${pagamento}
+📍 *Endereço:* ${endereco}
+💰 *Valor Total:* ${valor}
+
+━━━━━━━━━━━━━━━
+📅 ${new Date().toLocaleString()}`;
+
+        // Abre o WhatsApp com a mensagem formatada
+        // Você pode substituir o número abaixo pelo número do WhatsApp Business
+        window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(mensagemWhatsApp)}`, '_blank');
 
         // Continua com o envio do email...
         const mensagemEmail = `
@@ -125,7 +124,7 @@ Data: ${new Date().toLocaleString()}
 
     } catch (error) {
         console.error("Erro:", error);
-        alert("Erro ao preparar impressão: " + error.message);
+        alert("Erro ao preparar mensagem: " + error.message);
     }
 }
 
