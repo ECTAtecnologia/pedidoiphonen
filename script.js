@@ -74,57 +74,28 @@ function imprimirPedido() {
     }
 
     try {
-        // Cria um elemento para impressão
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Imprimir Pedido</title>
-                <style>
-                    body {
-                        font-family: monospace;
-                        font-size: 12px;
-                        line-height: 1.3;
-                        padding: 10px;
-                    }
-                    .header {
-                        text-align: center;
-                        margin-bottom: 20px;
-                    }
-                    .divider {
-                        border-top: 1px dashed #000;
-                        margin: 10px 0;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="header">
-                    <strong>${estabelecimento}</strong>
-                </div>
-                <div class="header">
-                    <strong>PEDIDO</strong>
-                </div>
-                <div class="divider"></div>
-                <p><strong>Nome:</strong> ${nome}</p>
-                <p><strong>Telefone:</strong> ${telefone}</p>
-                <p><strong>Produtos:</strong><br>${produtos}</p>
-                <p><strong>Forma de Pagamento:</strong> ${pagamento}</p>
-                <p><strong>Endereço:</strong> ${endereco}</p>
-                <p><strong>Valor Total:</strong> ${valor}</p>
-                <div class="divider"></div>
-                <div class="header">
-                    <small>${new Date().toLocaleString()}</small>
-                </div>
-            </body>
-            </html>
-        `);
-        
-        // Espera o conteúdo carregar e abre o diálogo de impressão
-        printWindow.document.close();
-        printWindow.onload = function() {
-            printWindow.focus();
-            printWindow.print();
+        // Formata o texto para impressão
+        const textoImpressao = 
+            `${estabelecimento}\n\n` +
+            `PEDIDO\n` +
+            `=================\n\n` +
+            `Nome: ${nome}\n` +
+            `Telefone: ${telefone}\n\n` +
+            `Produtos:\n${produtos}\n\n` +
+            `Forma de Pagamento: ${pagamento}\n` +
+            `Endereco: ${endereco}\n` +
+            `Valor Total: ${valor}\n\n` +
+            `=================\n` +
+            `${new Date().toLocaleString()}`;
+
+        // Prepara os dados para o Open Label
+        const openLabelData = {
+            text: textoImpressao,
+            type: 'text/plain'
         };
+
+        // Abre o Open Label
+        window.location.href = `openlabel://print?data=${encodeURIComponent(JSON.stringify(openLabelData))}`;
 
         // Envia o email usando o serviço da ECTA
         const mensagemEmail = `
