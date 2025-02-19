@@ -1,5 +1,8 @@
 // Aguarda todas as bibliotecas carregarem
 document.addEventListener('DOMContentLoaded', function() {
+    // Define jsPDF globalmente
+    window.jsPDF = window.jspdf.jsPDF;
+
     // Máscara para telefone
     var telefoneInput = document.getElementById('telefone');
     VMasker(telefoneInput).maskPattern('(99) 99999-9999');
@@ -75,33 +78,66 @@ function imprimirPedido() {
     }
 
     try {
-        // Formata o texto para impressão de forma simples
-        const textoImpressao = 
-            `${estabelecimento}
+        // Cria um novo documento PDF com tamanho menor
+        const doc = new jsPDF({
+            unit: 'mm',
+            format: [58, 100] // Tamanho padrão de bobina térmica 58mm
+        });
 
-PEDIDO
---------------------------------
+        // Configura fonte
+        doc.setFontSize(10);
+        
+        // Centraliza o nome do estabelecimento
+        doc.setFont('helvetica', 'bold');
+        doc.text(estabelecimento, 29, 5, { align: 'center' });
+        
+        // Linha divisória fina
+        doc.setLineWidth(0.1);
+        doc.line(2, 7, 56, 7);
 
-Nome: ${nome}
-Telefone: ${telefone}
+        // Configura fonte para o conteúdo
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
 
-Produtos:
-${produtos}
+        // Adiciona os dados do pedido de forma compacta
+        let y = 12;
+        
+        doc.text(`Nome: ${nome}`, 2, y);
+        y += 5;
+        doc.text(`Telefone: ${telefone}`, 2, y);
+        y += 5;
+        
+        // Produtos
+        doc.text('Produtos:', 2, y);
+        y += 5;
+        const produtosLines = doc.splitTextToSize(produtos, 54);
+        doc.text(produtosLines, 2, y);
+        y += (produtosLines.length * 4);
+        
+        doc.text(`Forma de Pagamento: ${pagamento}`, 2, y);
+        y += 5;
+        
+        doc.text(`Valor Total: ${valor}`, 2, y);
+        y += 5;
+        
+        // Endereço
+        doc.text('Endereço:', 2, y);
+        y += 5;
+        const enderecoLines = doc.splitTextToSize(endereco, 54);
+        doc.text(enderecoLines, 2, y);
+        y += (enderecoLines.length * 4);
 
-Forma de Pagamento: ${pagamento}
-Valor Total: ${valor}
+        // Linha final
+        doc.line(2, y, 56, y);
+        y += 3;
+        
+        // Data
+        doc.setFontSize(8);
+        doc.text(new Date().toLocaleString(), 29, y, { align: 'center' });
 
-Endereço:
-${endereco}
-
---------------------------------
-${new Date().toLocaleString()}
-
-`;
-
-        // Tenta imprimir usando diferentes formatos de URL do Open Label
-        const urlOpenLabel = `openlabel://print?text=${encodeURIComponent(textoImpressao)}`;
-        window.location.href = urlOpenLabel;
+        // Abre o PDF para impressão
+        doc.autoPrint();
+        window.open(doc.output('bloburl'), '_blank');
 
         // Continua com o envio do email...
         const mensagemEmail = `
@@ -129,7 +165,7 @@ Data: ${new Date().toLocaleString()}
 
     } catch (error) {
         console.error("Erro:", error);
-        alert("Erro ao preparar impressão: " + error.message);
+        alert("Erro ao gerar PDF: " + error.message);
     }
 }
 
