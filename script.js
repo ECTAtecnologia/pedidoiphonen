@@ -88,16 +88,18 @@ function imprimirPedido() {
             `=================\n` +
             `${new Date().toLocaleString()}`;
 
-        // Prepara os dados para o Open Label
-        const openLabelData = {
-            text: textoImpressao,
-            type: 'text/plain'
-        };
+        // Tenta diferentes formatos de URL para o Open Label
+        const openLabelUrl = `openlabel:?text=${encodeURIComponent(textoImpressao)}`;
+        
+        // Cria um link e simula o clique
+        const link = document.createElement('a');
+        link.href = openLabelUrl;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
-        // Abre o Open Label
-        window.location.href = `openlabel://print?data=${encodeURIComponent(JSON.stringify(openLabelData))}`;
-
-        // Envia o email usando o serviço da ECTA
+        // Continua com o envio do email...
         const mensagemEmail = `
 Novo pedido registrado:
 
