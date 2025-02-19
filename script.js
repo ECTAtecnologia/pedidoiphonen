@@ -78,59 +78,59 @@ function imprimirPedido() {
     }
 
     try {
-        // Cria um novo documento PDF
+        // Cria um novo documento PDF com tamanho menor
         const doc = new jsPDF({
             unit: 'mm',
-            format: [80, 150] // Tamanho típico de papel térmico
+            format: [80, 120] // Reduzido o comprimento para 120mm
         });
 
-        // Configura a fonte
-        doc.setFontSize(12);
+        // Configura a fonte com tamanho menor
+        doc.setFontSize(10);
         
         // Centraliza o texto do estabelecimento
         doc.setFont('helvetica', 'bold');
-        doc.text(estabelecimento, 40, 10, { align: 'center' });
+        doc.text(estabelecimento, 40, 8, { align: 'center' });
         
-        // Adiciona linha divisória
-        doc.setLineWidth(0.5);
-        doc.line(5, 15, 75, 15);
+        // Adiciona linha divisória mais próxima
+        doc.setLineWidth(0.3);
+        doc.line(5, 12, 75, 12);
 
-        // Configura fonte para o conteúdo
-        doc.setFontSize(10);
+        // Configura fonte menor para o conteúdo
+        doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
 
-        // Adiciona os dados do pedido
-        let y = 25; // Posição vertical inicial
+        // Adiciona os dados do pedido com espaçamento menor
+        let y = 18; // Começa mais acima
         
         doc.text(`Nome: ${nome}`, 5, y);
-        y += 7;
+        y += 5; // Reduzido o espaçamento
         doc.text(`Telefone: ${telefone}`, 5, y);
-        y += 10;
+        y += 7;
         
         doc.text('Produtos:', 5, y);
-        y += 7;
-        // Quebra os produtos em linhas
+        y += 5;
+        // Quebra os produtos em linhas com largura maior
         const produtosLines = doc.splitTextToSize(produtos, 70);
         doc.text(produtosLines, 5, y);
-        y += (produtosLines.length * 5) + 5;
+        y += (produtosLines.length * 4) + 3;
         
         doc.text(`Pagamento: ${pagamento}`, 5, y);
-        y += 7;
+        y += 5;
         
         // Quebra o endereço em linhas
         const enderecoLines = doc.splitTextToSize(`Endereço: ${endereco}`, 70);
         doc.text(enderecoLines, 5, y);
-        y += (enderecoLines.length * 5) + 5;
+        y += (enderecoLines.length * 4) + 3;
         
         doc.text(`Valor Total: ${valor}`, 5, y);
-        y += 10;
+        y += 7;
 
         // Adiciona linha divisória final
         doc.line(5, y, 75, y);
-        y += 5;
+        y += 4;
         
-        // Adiciona data e hora
-        doc.setFontSize(8);
+        // Adiciona data e hora em fonte menor
+        doc.setFontSize(7);
         doc.text(new Date().toLocaleString(), 40, y, { align: 'center' });
 
         // Abre o PDF para impressão
