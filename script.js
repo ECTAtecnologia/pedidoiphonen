@@ -111,7 +111,7 @@ Valor Total: ${valor}
 Data: ${new Date().toLocaleString()}
         `;
 
-        fetch(`https://portal.ecta.com.br/gerenciamento/EnviarEmailEcta?Assunto=PEDIDO_${estabelecimento}&Mensagem=${encodeURIComponent(mensagemEmail)}`)
+        fetch(`https://portal.ecta.com.br/gerenciamento/EnviarEmailEcta?Assunto=PEDIDO CAIXA CELULAR&Mensagem=${encodeURIComponent(mensagemEmail)}`)
             .then(response => {
                 console.log("Email enviado com sucesso");
                 limparFormulario();
