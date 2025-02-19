@@ -1,8 +1,5 @@
 // Aguarda todas as bibliotecas carregarem
 document.addEventListener('DOMContentLoaded', function() {
-    // Define jsPDF globalmente
-    window.jsPDF = window.jspdf.jsPDF;
-
     // Máscara para telefone
     var telefoneInput = document.getElementById('telefone');
     VMasker(telefoneInput).maskPattern('(99) 99999-9999');
@@ -78,64 +75,27 @@ function imprimirPedido() {
     }
 
     try {
-        // Cria um novo documento PDF com tamanho menor
-        const doc = new jsPDF({
-            unit: 'mm',
-            format: [80, 120] // Reduzido o comprimento para 120mm
-        });
+        // Formata o texto para impressão
+        const textoImpressao = 
+            `${estabelecimento}\n` +
+            `--------------------------------\n` +
+            `Nome: ${nome}\n` +
+            `Telefone: ${telefone}\n\n` +
+            `Produtos:\n${produtos}\n\n` +
+            `Forma de Pagamento: ${pagamento}\n` +
+            `Valor Total: ${valor}\n\n` +
+            `Endereço:\n${endereco}\n` +
+            `--------------------------------\n` +
+            `${new Date().toLocaleString()}\n`;
 
-        // Configura a fonte com tamanho menor
-        doc.setFontSize(10);
-        
-        // Centraliza o texto do estabelecimento
-        doc.setFont('helvetica', 'bold');
-        doc.text(estabelecimento, 40, 8, { align: 'center' });
-        
-        // Adiciona linha divisória mais próxima
-        doc.setLineWidth(0.3);
-        doc.line(5, 12, 75, 12);
+        // Prepara os dados para o Open Label
+        const openLabelData = {
+            text: textoImpressao,
+            type: 'text/plain'
+        };
 
-        // Configura fonte menor para o conteúdo
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
-
-        // Adiciona os dados do pedido com espaçamento menor
-        let y = 18; // Começa mais acima
-        
-        doc.text(`Nome: ${nome}`, 5, y);
-        y += 5; // Reduzido o espaçamento
-        doc.text(`Telefone: ${telefone}`, 5, y);
-        y += 7;
-        
-        doc.text('Produtos:', 5, y);
-        y += 5;
-        // Quebra os produtos em linhas com largura maior
-        const produtosLines = doc.splitTextToSize(produtos, 70);
-        doc.text(produtosLines, 5, y);
-        y += (produtosLines.length * 4) + 3;
-        
-        doc.text(`Pagamento: ${pagamento}`, 5, y);
-        y += 5;
-        
-        // Quebra o endereço em linhas
-        const enderecoLines = doc.splitTextToSize(`Endereço: ${endereco}`, 70);
-        doc.text(enderecoLines, 5, y);
-        y += (enderecoLines.length * 4) + 3;
-        
-        doc.text(`Valor Total: ${valor}`, 5, y);
-        y += 7;
-
-        // Adiciona linha divisória final
-        doc.line(5, y, 75, y);
-        y += 4;
-        
-        // Adiciona data e hora em fonte menor
-        doc.setFontSize(7);
-        doc.text(new Date().toLocaleString(), 40, y, { align: 'center' });
-
-        // Abre o PDF para impressão
-        doc.autoPrint();
-        window.open(doc.output('bloburl'), '_blank');
+        // Abre o Open Label
+        window.location.href = `openlabel:?text=${encodeURIComponent(textoImpressao)}`;
 
         // Continua com o envio do email...
         const mensagemEmail = `
@@ -163,7 +123,7 @@ Data: ${new Date().toLocaleString()}
 
     } catch (error) {
         console.error("Erro:", error);
-        alert("Erro ao gerar PDF: " + error.message);
+        alert("Erro ao preparar impressão: " + error.message);
     }
 }
 
