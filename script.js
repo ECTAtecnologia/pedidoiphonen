@@ -75,30 +75,33 @@ function imprimirPedido() {
     }
 
     try {
-        // Formata o texto para impressão com comandos ESC/POS
+        // Formata o texto para impressão de forma simples
         const textoImpressao = 
-            '\x1B\x40' +          // Initialize printer
-            '\x1B\x61\x01' +      // Center alignment
-            `${estabelecimento}\n\n` +
-            '\x1B\x61\x00' +      // Left alignment
-            `Nome: ${nome}\n` +
-            `Telefone: ${telefone}\n\n` +
-            `Produtos:\n${produtos}\n\n` +
-            `Forma de Pagamento: ${pagamento}\n` +
-            `Valor Total: ${valor}\n\n` +
-            `Endereço:\n${endereco}\n\n` +
-            '\x1B\x61\x01' +      // Center alignment
-            `${new Date().toLocaleString()}\n` +
-            '\x1B\x64\x02';       // Feed 2 lines
+            `${estabelecimento}
 
-        // Prepara os dados para o Open Label
-        const openLabelData = {
-            text: textoImpressao,
-            type: 'raw'
-        };
+PEDIDO
+--------------------------------
 
-        // Abre o Open Label com os dados formatados
-        window.location.href = `openlabel://print?data=${encodeURIComponent(JSON.stringify(openLabelData))}`;
+Nome: ${nome}
+Telefone: ${telefone}
+
+Produtos:
+${produtos}
+
+Forma de Pagamento: ${pagamento}
+Valor Total: ${valor}
+
+Endereço:
+${endereco}
+
+--------------------------------
+${new Date().toLocaleString()}
+
+`;
+
+        // Tenta imprimir usando diferentes formatos de URL do Open Label
+        const urlOpenLabel = `openlabel://print?text=${encodeURIComponent(textoImpressao)}`;
+        window.location.href = urlOpenLabel;
 
         // Continua com o envio do email...
         const mensagemEmail = `
