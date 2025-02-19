@@ -1,3 +1,6 @@
+// Define jsPDF globalmente
+window.jsPDF = window.jspdf.jsPDF;
+
 window.onload = function() {
     // Máscara para telefone
     var telefoneInput = document.getElementById('telefone');
