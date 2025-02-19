@@ -78,61 +78,82 @@ function imprimirPedido() {
     }
 
     try {
-        // Cria um novo documento PDF com tamanho menor
+        // Primeiro calcula a altura necessária
+        const alturaLinha = 3; // altura de cada linha em mm
+        const margemSuperior = 4;
+        let alturaTotal = margemSuperior;
+
+        // Calcula altura dos produtos
+        const produtosTemp = new jsPDF().splitTextToSize(produtos, 54);
+        const alturaProdutos = produtosTemp.length * alturaLinha;
+
+        // Calcula altura do endereço
+        const enderecoTemp = new jsPDF().splitTextToSize(endereco, 54);
+        const alturaEndereco = enderecoTemp.length * alturaLinha;
+
+        // Calcula altura total necessária
+        alturaTotal += 6; // estabelecimento + linha
+        alturaTotal += 8; // nome + telefone
+        alturaTotal += alturaProdutos + 4; // produtos + título
+        alturaTotal += 8; // pagamento + valor
+        alturaTotal += alturaEndereco + 4; // endereço + título
+        alturaTotal += 6; // linha final + data
+
+        // Cria o PDF com a altura exata necessária
         const doc = new jsPDF({
             unit: 'mm',
-            format: [58, 100] // Tamanho padrão de bobina térmica 58mm
+            format: [58, alturaTotal]
         });
 
         // Configura fonte
-        doc.setFontSize(10);
+        doc.setFontSize(8);
         
         // Centraliza o nome do estabelecimento
         doc.setFont('helvetica', 'bold');
-        doc.text(estabelecimento, 29, 5, { align: 'center' });
+        doc.text(estabelecimento, 29, 4, { align: 'center' });
         
-        // Linha divisória fina
+        // Linha divisória
         doc.setLineWidth(0.1);
-        doc.line(2, 7, 56, 7);
+        doc.line(2, 6, 56, 6);
 
         // Configura fonte para o conteúdo
-        doc.setFontSize(10);
+        doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
 
-        // Adiciona os dados do pedido de forma compacta
-        let y = 12;
+        // Adiciona os dados do pedido
+        let y = 10;
         
         doc.text(`Nome: ${nome}`, 2, y);
-        y += 5;
+        y += 4;
         doc.text(`Telefone: ${telefone}`, 2, y);
-        y += 5;
+        y += 4;
         
         // Produtos
         doc.text('Produtos:', 2, y);
-        y += 5;
+        y += 4;
         const produtosLines = doc.splitTextToSize(produtos, 54);
         doc.text(produtosLines, 2, y);
-        y += (produtosLines.length * 4);
+        y += (produtosLines.length * 3);
         
         doc.text(`Forma de Pagamento: ${pagamento}`, 2, y);
-        y += 5;
+        y += 4;
         
         doc.text(`Valor Total: ${valor}`, 2, y);
-        y += 5;
+        y += 4;
         
         // Endereço
         doc.text('Endereço:', 2, y);
-        y += 5;
+        y += 4;
         const enderecoLines = doc.splitTextToSize(endereco, 54);
         doc.text(enderecoLines, 2, y);
-        y += (enderecoLines.length * 4);
+        y += (enderecoLines.length * 3);
 
         // Linha final
         doc.line(2, y, 56, y);
-        y += 3;
+        y += 2;
         
         // Data
-        doc.setFontSize(8);
+        doc.setFontSize(6);
         doc.text(new Date().toLocaleString(), 29, y, { align: 'center' });
 
         // Abre o PDF para impressão
