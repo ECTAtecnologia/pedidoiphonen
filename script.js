@@ -76,21 +76,29 @@ function imprimirPedido() {
         return;
     }
 
-    // Formata o texto para o Open Label
-    const dadosImpressao = {
-        estabelecimento: estabelecimento,
-        nome: nome,
-        telefone: telefone,
-        produtos: produtos,
-        pagamento: pagamento,
-        endereco: endereco,
-        valor: valor,
-        data: new Date().toLocaleString()
-    };
+    // Formata o texto para impressão no estilo térmico
+    const textoImpressao = 
+        `${estabelecimento}\n\n` +
+        `PEDIDO\n` +
+        `=================\n\n` +
+        `Nome: ${nome}\n` +
+        `Telefone: ${telefone}\n\n` +
+        `Produtos:\n${produtos}\n\n` +
+        `Forma de Pagamento: ${pagamento}\n` +
+        `Endereco: ${endereco}\n` +
+        `Valor Total: ${valor}\n\n` +
+        `=================\n` +
+        `${new Date().toLocaleString()}`;
 
     try {
-        // Cria o link para o Open Label com protocolo https
-        window.location.href = 'https://openlabel.app/print?data=' + encodeURIComponent(JSON.stringify(dadosImpressao));
+        // Tenta abrir o Open Label com o formato específico para Safari
+        const openLabelData = {
+            text: textoImpressao,
+            type: 'text/plain'
+        };
+
+        // Usa um esquema de URL mais compatível
+        window.location.href = `openlabel:?data=${encodeURIComponent(JSON.stringify(openLabelData))}`;
 
         // Continua com o envio do email...
         emailjs.send("service_2frhpqp", "template_29ewlfj", {
