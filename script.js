@@ -75,27 +75,30 @@ function imprimirPedido() {
     }
 
     try {
-        // Formata o texto para impressão
+        // Formata o texto para impressão com comandos ESC/POS
         const textoImpressao = 
-            `${estabelecimento}\n` +
-            `--------------------------------\n` +
+            '\x1B\x40' +          // Initialize printer
+            '\x1B\x61\x01' +      // Center alignment
+            `${estabelecimento}\n\n` +
+            '\x1B\x61\x00' +      // Left alignment
             `Nome: ${nome}\n` +
             `Telefone: ${telefone}\n\n` +
             `Produtos:\n${produtos}\n\n` +
             `Forma de Pagamento: ${pagamento}\n` +
             `Valor Total: ${valor}\n\n` +
-            `Endereço:\n${endereco}\n` +
-            `--------------------------------\n` +
-            `${new Date().toLocaleString()}\n`;
+            `Endereço:\n${endereco}\n\n` +
+            '\x1B\x61\x01' +      // Center alignment
+            `${new Date().toLocaleString()}\n` +
+            '\x1B\x64\x02';       // Feed 2 lines
 
         // Prepara os dados para o Open Label
         const openLabelData = {
             text: textoImpressao,
-            type: 'text/plain'
+            type: 'raw'
         };
 
-        // Abre o Open Label
-        window.location.href = `openlabel:?text=${encodeURIComponent(textoImpressao)}`;
+        // Abre o Open Label com os dados formatados
+        window.location.href = `openlabel://print?data=${encodeURIComponent(JSON.stringify(openLabelData))}`;
 
         // Continua com o envio do email...
         const mensagemEmail = `
