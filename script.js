@@ -71,9 +71,9 @@ function imprimirPedido() {
     const valor = document.getElementById('valor').value;
     const estabelecimento = localStorage.getItem('establishmentName') || 'Estabelecimento';
 
-    // Verifica se todos os campos estão preenchidos
-    if (!nome || !telefone || !produtos || !pagamento || !endereco || !valor) {
-        alert('Por favor, preencha todos os campos');
+    // Verifica se todos os campos obrigatórios estão preenchidos
+    if (!nome || !produtos || !pagamento || !endereco || !valor) {
+        alert('Por favor, preencha todos os campos obrigatórios');
         return;
     }
 
