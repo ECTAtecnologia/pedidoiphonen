@@ -202,31 +202,23 @@ function limparFormulario() {
 
 async function colarTexto(elementId) {
     try {
-        if (!navigator.clipboard) {
-            throw new Error('API de área de transferência não suportada');
-        }
-
-        // Tenta o método mais novo primeiro
-        try {
-            const texto = await navigator.clipboard.readText();
-            document.getElementById(elementId).value = texto;
-            return;
-        } catch (err) {
-            console.log('Método moderno falhou, tentando método alternativo');
-        }
-
-        // Método alternativo usando document.execCommand
         const elemento = document.getElementById(elementId);
-        elemento.focus();
-        const resultado = document.execCommand('paste');
         
-        if (!resultado) {
-            throw new Error('Não foi possível colar o texto');
+        // Em dispositivos móveis, abre o menu de colar nativo
+        elemento.focus();
+        elemento.select();
+        
+        // Verifica se o navegador suporta o novo método de clipboard
+        if (navigator.clipboard && navigator.clipboard.readText) {
+            const texto = await navigator.clipboard.readText();
+            elemento.value = texto;
+        } else {
+            // Se não suportar, mostra mensagem específica para mobile
+            alert('Toque e segure o campo para colar o texto');
         }
     } catch (err) {
         console.error('Erro ao colar:', err);
-        
-        // Solicita ao usuário que use o atalho do teclado
-        alert('Por favor, use Ctrl+V (ou Cmd+V no Mac) para colar o texto');
+        // Mensagem específica para dispositivos móveis
+        alert('Toque e segure o campo para colar o texto');
     }
 }
