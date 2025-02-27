@@ -200,22 +200,8 @@ function limparFormulario() {
     document.getElementById('nome').focus();
 }
 
-async function colarTexto(elementId) {
-    try {
-        const elemento = document.getElementById(elementId);
-        elemento.focus();
-        
-        try {
-            const texto = await navigator.clipboard.readText();
-            elemento.value = texto;
-        } catch (err) {
-            // Se falhar, abre um prompt para colar manualmente
-            const textoManual = prompt('Cole o texto aqui:');
-            if (textoManual) {
-                elemento.value = textoManual;
-            }
-        }
-    } catch (err) {
-        console.error('Erro ao colar:', err);
-    }
+function colarTexto(elementId) {
+    const elemento = document.getElementById(elementId);
+    elemento.focus();
+    alert('Toque e segure o campo para colar o texto');
 }
