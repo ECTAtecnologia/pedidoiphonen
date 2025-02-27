@@ -47,17 +47,26 @@
     <form id="pedidoForm">
         <div class="form-group">
             <label for="nome">Nome do Cliente:</label>
-            <input type="text" id="nome" required>
+            <div class="input-with-button">
+                <input type="text" id="nome" required>
+                <button type="button" onclick="colarTexto('nome')" class="btn-colar">Colar</button>
+            </div>
         </div>
 
         <div class="form-group">
             <label for="telefone">Telefone:</label>
-            <input type="tel" id="telefone">
+            <div class="input-with-button">
+                <input type="tel" id="telefone">
+                <button type="button" onclick="colarTexto('telefone')" class="btn-colar">Colar</button>
+            </div>
         </div>
 
         <div class="form-group">
             <label for="produtos">Produtos:</label>
-            <textarea id="produtos" rows="4" style="width: 100%" required></textarea>
+            <div class="input-with-button">
+                <textarea id="produtos" rows="4" style="width: 100%" required></textarea>
+                <button type="button" onclick="colarTexto('produtos')" class="btn-colar">Colar</button>
+            </div>
         </div>
 
         <div class="form-group">
@@ -74,7 +83,10 @@
 
         <div class="form-group">
             <label for="endereco">Endereço:</label>
-            <textarea id="endereco" rows="2" style="width: 100%" required></textarea>
+            <div class="input-with-button">
+                <textarea id="endereco" rows="2" style="width: 100%" required></textarea>
+                <button type="button" onclick="colarTexto('endereco')" class="btn-colar">Colar</button>
+            </div>
         </div>
 
         <div class="form-group">
