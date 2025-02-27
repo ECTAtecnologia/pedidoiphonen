@@ -203,22 +203,19 @@ function limparFormulario() {
 async function colarTexto(elementId) {
     try {
         const elemento = document.getElementById(elementId);
-        
-        // Em dispositivos móveis, abre o menu de colar nativo
         elemento.focus();
-        elemento.select();
         
-        // Verifica se o navegador suporta o novo método de clipboard
-        if (navigator.clipboard && navigator.clipboard.readText) {
+        try {
             const texto = await navigator.clipboard.readText();
             elemento.value = texto;
-        } else {
-            // Se não suportar, mostra mensagem específica para mobile
-            alert('Toque e segure o campo para colar o texto');
+        } catch (err) {
+            // Se falhar, abre um prompt para colar manualmente
+            const textoManual = prompt('Cole o texto aqui:');
+            if (textoManual) {
+                elemento.value = textoManual;
+            }
         }
     } catch (err) {
         console.error('Erro ao colar:', err);
-        // Mensagem específica para dispositivos móveis
-        alert('Toque e segure o campo para colar o texto');
     }
 }
