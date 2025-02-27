@@ -199,3 +199,13 @@ function limparFormulario() {
     document.getElementById('valor').value = '';
     document.getElementById('nome').focus();
 }
+
+async function colarTexto(elementId) {
+    try {
+        const texto = await navigator.clipboard.readText();
+        document.getElementById(elementId).value = texto;
+    } catch (err) {
+        alert('Não foi possível acessar a área de transferência');
+        console.error('Erro ao colar:', err);
+    }
+}
